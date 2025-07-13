@@ -7,8 +7,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-BOT_TOKEN = "YOUR_BOT_TOKEN"  # Replace this later
-
+import os
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 async def search(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❗ Usage: /search <query>")
