@@ -7,8 +7,8 @@ from voice_utils import transcribe_voice
 BOT_TOKEN = os.getenv("BOT_TOKEN", "your-bot-token-here")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👋 Welcome to WikiGenie Bot!
-Use /help to see available commands.")
+    await update.message.reply_text("👋 Welcome to WikiGenie Bot! Type /help for all features.")
+
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("""
