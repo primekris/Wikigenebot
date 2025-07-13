@@ -1,40 +1,35 @@
 import wikipedia
 import datetime
 
-def search_wikipedia(query):
+def search_wikipedia(query, lang="en"):
+    wikipedia.set_lang(lang)
     try:
-        summary = wikipedia.summary(query, sentences=3, auto_suggest=False)
-        page = wikipedia.page(query, auto_suggest=False)
-        return f"*{page.title}*
-{summary}
-
-🔗 {page.url}"
-    except Exception as e:
-        return f"❌ Error: {str(e)}"
-
-def get_random_article():
-    try:
-        title = wikipedia.random(1)
-        return search_wikipedia(title)
-    except Exception as e:
-        return f"❌ Error fetching random article: {str(e)}"
-
-def get_today_on_history():
-    try:
-        today = datetime.datetime.now()
-        month = today.strftime("%B")
-        day = today.day
-        query = f"{month}_{day}"
         page = wikipedia.page(query)
-        return f"*{page.title}*
-
-🔗 {page.url}"
+        return f"*{page.title}*\n\n{page.summary[:1000]}...\n[Read more]({page.url})"
+    except wikipedia.exceptions.DisambiguationError as e:
+        options = "\n".join(f"- {opt}" for opt in e.options[:5])
+        return f"❗ The query returned multiple results. Try being more specific:\n\n{options}"
+    except wikipedia.exceptions.PageError:
+        return "❌ No matching article found."
     except Exception as e:
-        return f"❌ Could not fetch today's history: {str(e)}"
+        return f"⚠️ Error: {str(e)}"
 
-def set_language(code):
+def random_article(lang="en"):
+    wikipedia.set_lang(lang)
     try:
-        wikipedia.set_lang(code)
-        return True
-    except:
-        return False
+        title = wikipedia.random()
+        page = wikipedia.page(title)
+        return f"*{page.title}*\n\n{page.summary[:1000]}...\n[Read more]({page.url})"
+    except Exception as e:
+        return f"⚠️ Error fetching random article: {str(e)}"
+
+def today_in_history(lang="en"):
+    wikipedia.set_lang(lang)
+    today = datetime.datetime.now()
+    month = today.strftime("%B")
+    day = today.day
+    try:
+        page = wikipedia.page(f"{month} {day}")
+        return f"*On This Day — {month} {day}*\n\n{page.summary[:1000]}...\n[Read more]({page.url})"
+    except Exception as e:
+        return f"⚠️ Error fetching today's history: {str(e)}"
